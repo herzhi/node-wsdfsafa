@@ -3,720 +3,1443 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Network - Protect Earth</title>
+    <title>TechInnovate - Leading the Future of Technology</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         :root {
-            --primary: #2e7d32;
-            --secondary: #4caf50;
-            --accent: #8bc34a;
-            --light: #e8f5e9;
-            --dark: #1b5e20;
-            --text: #333333;
-            --white: #ffffff;
+            --primary-color: #0B2447;
+            --secondary-color: #5E17EB;
+            --accent-color: #FF6B00;
+            --text-light: #F5F5F5;
+            --text-dark: #333333;
         }
-
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            background-color: var(--light);
-            color: var(--text);
-            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
         }
-
-        header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            padding: 1rem 0;
-            position: sticky;
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--secondary-color), #8A2BE2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #hero-canvas {
+            position: absolute;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
+        
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
         }
-
-        .nav-container {
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .service-card {
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(255, 107, 0, 0.3);
+        }
+        
+        .stats-item {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+        
+        .stats-item:hover::before {
+            left: 100%;
+        }
+        
+        #data-visualization {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+        }
+        
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chatbot-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chatbot-header {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .logo {
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 20px;
+        }
+        
+        .bot-message {
+            background-color: #f1f1f1;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+        }
+        
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 5px;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .chatbot-input {
             display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        .chatbot-input button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
         }
-
-        .logo i {
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 2rem;
-        }
-
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
+        
+        .filter-btn {
             transition: all 0.3s ease;
-            padding: 0.5rem 0;
             position: relative;
+            overflow: hidden;
         }
-
-        nav ul li a:hover {
-            color: var(--accent);
-        }
-
-        nav ul li a::after {
+        
+        .filter-btn::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             width: 0;
             height: 2px;
-            background-color: var(--accent);
+            background-color: var(--accent-color);
             transition: width 0.3s ease;
         }
-
-        nav ul li a:hover::after {
+        
+        .filter-btn:hover::after,
+        .filter-btn.active::after {
             width: 100%;
         }
-
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--white);
+        
+        .filter-btn.active {
+            color: var(--accent-color);
         }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--accent);
-            color: var(--white);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        section {
-            padding: 5rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent);
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            color: var(--text);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-img {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-img img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .about-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 2rem 1rem;
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .stat-item i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--text);
-        }
-
-        .initiatives {
-            background-color: var(--white);
-        }
-
-        .initiatives-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .initiative-card {
-            background-color: var(--light);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .initiative-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .initiative-img {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .initiative-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .initiative-card:hover .initiative-img img {
-            transform: scale(1.1);
-        }
-
-        .initiative-content {
-            padding: 1.5rem;
-        }
-
-        .initiative-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .initiative-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .cta {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            text-align: center;
-            padding: 5rem 0;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta .btn {
-            background-color: var(--white);
-            color: var(--primary);
-        }
-
-        .cta .btn:hover {
-            background-color: var(--accent);
-            color: var(--white);
-        }
-
-        footer {
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 3rem 0 1rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-column p {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links li a {
-            color: var(--light);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links li a:hover {
-            color: var(--accent);
-            padding-left: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-menu {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 992px) {
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
+        
+        /* 响应式设计 */
         @media (max-width: 768px) {
-            .hero h1 {
+            .hero-content h1 {
                 font-size: 2.5rem;
             }
             
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: var(--primary);
-                flex-direction: column;
-                padding: 1rem 0;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            nav ul.active {
-                display: flex;
-            }
-            
-            nav ul li {
-                margin: 0;
-                padding: 0.8rem 0;
+            .chatbot-panel {
+                width: 300px;
+                height: 400px;
+                right: -10px;
             }
             
             .mobile-menu {
                 display: block;
             }
             
-            .initiatives-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
+            .desktop-menu {
+                display: none;
             }
         }
-
-        /* Animation for stats counter */
-        .counter {
-            transition: all 0.5s ease;
+        
+        /* 加载动画 */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-circle {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+        
+        /* 3D 卡片效果 */
+        .card-3d {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .card-3d-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .card-3d:hover .card-3d-inner {
+            transform: rotateY(10deg) rotateX(5deg);
+        }
+        
+        /* 数据流动画 */
+        .data-flow {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--accent-color), transparent);
+            animation: dataFlow 2s infinite;
+            opacity: 0;
+        }
+        
+        @keyframes dataFlow {
+            0% {
+                height: 0;
+                opacity: 0;
+                top: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                height: 100px;
+                opacity: 0;
+                top: 100%;
+            }
         }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-seedling"></i>
-                <span>Green Network</span>
-            </div>
-            <nav>
-                <div class="mobile-menu">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#initiatives">Initiatives</a></li>
-                    <li><a href="#get-involved">Get Involved</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body class="bg-gray-900 text-white">
+    <!-- 加载动画 -->
+    <div class="loader">
+        <div class="loader-circle"></div>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container hero-content">
-            <h1>Protect Our Planet, Preserve Our Future</h1>
-            <p>Join the global movement to create a sustainable world through conservation, education, and community action.</p>
-            <a href="#get-involved" class="btn">Join Our Network</a>
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 w-full bg-opacity-90 bg-gray-900 backdrop-blur-md z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-white">
+                        <span class="gradient-text">Tech</span>Innovate
+                    </div>
+                </div>
+                
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link text-white hover:text-gray-300">Home</a>
+                    <a href="#about" class="nav-link text-white hover:text-gray-300">About Us</a>
+                    <a href="#services" class="nav-link text-white hover:text-gray-300">Services</a>
+                    <a href="#technology" class="nav-link text-white hover:text-gray-300">Innovation</a>
+                    <a href="#contact" class="nav-link text-white hover:text-gray-300">Contact</a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-white focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 移动端导航菜单 -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4">
+                <a href="#home" class="block py-2 text-white hover:text-gray-300">Home</a>
+                <a href="#about" class="block py-2 text-white hover:text-gray-300">About Us</a>
+                <a href="#services" class="block py-2 text-white hover:text-gray-300">Services</a>
+                <a href="#technology" class="block py-2 text-white hover:text-gray-300">Innovation</a>
+                <a href="#contact" class="block py-2 text-white hover:text-gray-300">Contact</a>
+            </div>
         </div>
-    </section>
+    </nav>
 
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>About Green Network</h2>
-                <p>We are a global community dedicated to environmental protection and sustainable development.</p>
-            </div>
-            <div class="about-content">
-                <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Team planting trees">
-                </div>
-                <div class="about-text">
-                    <h3>Our Mission</h3>
-                    <p>Green Network is committed to creating a sustainable future by protecting natural ecosystems, promoting renewable energy, and empowering communities to take environmental action.</p>
-                    <p>Founded in 2010, we've grown from a small grassroots organization to an international network with over 50,000 members across 120 countries.</p>
-                    <p>Our approach combines scientific research, community engagement, and policy advocacy to address the most pressing environmental challenges of our time.</p>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-            </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <i class="fas fa-tree"></i>
-                    <h3 class="counter" data-target="2500000">0</h3>
-                    <p>Trees Planted</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="50000">0</h3>
-                    <p>Active Members</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-globe-americas"></i>
-                    <h3 class="counter" data-target="120">0</h3>
-                    <p>Countries Reached</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-recycle"></i>
-                    <h3 class="counter" data-target="1500">0</h3>
-                    <p>Cleanup Projects</p>
+    <!-- Hero 区域 -->
+    <section id="home" class="hero-section flex items-center justify-center">
+        <canvas id="hero-canvas"></canvas>
+        <div class="container mx-auto px-4 z-10">
+            <div class="hero-content text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="gradient-text">Leading</span> the Future of Tech
+                </h1>
+                <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto">
+                    We are committed to creating next-generation intelligent technology solutions that provide comprehensive support for enterprise digital transformation
+                </p>
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <a href="#services" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-white font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
+                        Explore Solutions
+                    </a>
+                    <a href="#contact" class="px-8 py-3 border border-white/30 rounded-full text-white font-medium hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                        Contact Us
+                    </a>
                 </div>
             </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down text-white text-2xl"></i>
         </div>
     </section>
 
-    <!-- Initiatives Section -->
-    <section class="initiatives" id="initiatives">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Initiatives</h2>
-                <p>Discover the key programs and projects we're implementing to protect our planet.</p>
+    <!-- 关于我们 -->
+    <section id="about" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">About <span class="gradient-text">Us</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto"></div>
             </div>
-            <div class="initiatives-grid">
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://dialogue.earth/content/uploads/2021/04/lessons-from-the-rush-to-reforest-china-dialogue-2400x1599.jpg" alt="Reforestation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Global Reforestation</h3>
-                        <p>Planting millions of trees worldwide to restore ecosystems, combat climate change, and protect biodiversity.</p>
-                        <a href="#" class="btn">Learn More</a>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="card-3d">
+                    <div class="card-3d-inner">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/3aab586c0ec24e4b9cc005165e2e1e4b~tplv-a9rns2rl98-image.image?rcl=20251201122143C37DEDA743EA534D7D6A&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1767154947&x-signature=tXFO%2Bbumn8B6pbZnC1uET04jRNk%3D" alt="Company Headquarters" class="rounded-lg shadow-2xl w-full">
                     </div>
                 </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1621451537084-482c73073a0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Ocean Conservation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Ocean Conservation</h3>
-                        <p>Protecting marine ecosystems, reducing plastic pollution, and promoting sustainable fishing practices.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Renewable Energy">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Renewable Energy</h3>
-                        <p>Promoting solar, wind, and other clean energy sources to reduce dependence on fossil fuels.</p>
-                        <a href="#" class="btn">Learn More</a>
+                
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Technology Driven, Innovation Future</h3>
+                    <p class="text-gray-300 mb-6">
+                        Founded in 2015, TechInnovate is a technology enterprise focusing on artificial intelligence, big data analytics, and cloud computing solutions. Our mission is to empower businesses through innovative technologies and help clients maintain competitive advantages in the digital era.
+                    </p>
+                    <p class="text-gray-300 mb-8">
+                        With exceptional technical capabilities and rich industry experience, we have provided customized digital transformation services to over 500 enterprises worldwide, covering finance, manufacturing, retail, healthcare, and other sectors.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="stats-item bg-gray-700/50 p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold gradient-text mb-2 counter" data-target="500">0</div>
+                            <p class="text-gray-400">Enterprise Clients</p>
+                        </div>
+                        <div class="stats-item bg-gray-700/50 p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold gradient-text mb-2 counter" data-target="200">0</div>
+                            <p class="text-gray-400">Technical Experts</p>
+                        </div>
+                        <div class="stats-item bg-gray-700/50 p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold gradient-text mb-2 counter" data-target="30">0</div>
+                            <p class="text-gray-400">Technical Patents</p>
+                        </div>
+                        <div class="stats-item bg-gray-700/50 p-6 rounded-lg text-center">
+                            <div class="text-4xl font-bold gradient-text mb-2 counter" data-target="12">0</div>
+                            <p class="text-gray-400">Industry Awards</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta" id="get-involved">
-        <div class="container">
-            <h2>Join Our Global Movement</h2>
-            <p>Together, we can create a sustainable future for generations to come. Every action counts, no matter how small.</p>
-            <a href="#" class="btn">Become a Member</a>
+    <!-- 产品服务 -->
+    <section id="services" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Our <span class="gradient-text">Services</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-3xl mx-auto">
+                    We provide comprehensive digital solutions to meet the needs of businesses at different development stages
+                </p>
+            </div>
+            
+            <!-- 服务筛选 -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="filter-btn active px-4 py-2 text-white" data-filter="all">All</button>
+                <button class="filter-btn px-4 py-2 text-white" data-filter="ai">AI</button>
+                <button class="filter-btn px-4 py-2 text-white" data-filter="data">Data Analytics</button>
+                <button class="filter-btn px-4 py-2 text-white" data-filter="cloud">Cloud</button>
+                <button class="filter-btn px-4 py-2 text-white" data-filter="iot">IoT</button>
+            </div>
+            
+            <!-- 服务卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 服务卡片 1 -->
+                <div class="service-card rounded-xl p-6 filter-item" data-category="ai">
+                    <div class="w-16 h-16 bg-blue-600/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-robot text-3xl text-blue-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Intelligent Customer Service</h3>
+                    <p class="text-gray-400 mb-4">
+                        AI-powered customer service solutions based on natural language processing, providing 24/7 support and significantly reducing labor costs.
+                    </p>
+                    <a href="#" class="text-blue-400 hover:text-blue-300 flex items-center">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 服务卡片 2 -->
+                <div class="service-card rounded-xl p-6 filter-item" data-category="data">
+                    <div class="w-16 h-16 bg-purple-600/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-3xl text-purple-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Business Intelligence Analytics</h3>
+                    <p class="text-gray-400 mb-4">
+                        Integrating multi-source data to uncover business insights through advanced analytical models, supporting enterprise decision-making and improving operational efficiency.
+                    </p>
+                    <a href="#" class="text-purple-400 hover:text-purple-300 flex items-center">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 服务卡片 3 -->
+                <div class="service-card rounded-xl p-6 filter-item" data-category="cloud">
+                    <div class="w-16 h-16 bg-indigo-600/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-cloud text-3xl text-indigo-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Cloud Infrastructure</h3>
+                    <p class="text-gray-400 mb-4">
+                        Providing secure, efficient, and scalable cloud infrastructure services to help businesses reduce IT costs and enhance operational flexibility.
+                    </p>
+                    <a href="#" class="text-indigo-400 hover:text-indigo-300 flex items-center">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 服务卡片 4 -->
+                <div class="service-card rounded-xl p-6 filter-item" data-category="iot">
+                    <div class="w-16 h-16 bg-green-600/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-network-wired text-3xl text-green-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">IoT Solutions</h3>
+                    <p class="text-gray-400 mb-4">
+                        Connecting smart devices to enable real-time data collection and analysis, providing intelligent transformation support for manufacturing, retail, and other industries.
+                    </p>
+                    <a href="#" class="text-green-400 hover:text-green-300 flex items-center">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 服务卡片 5 -->
+                <div class="service-card rounded-xl p-6 filter-item" data-category="ai">
+                    <div class="w-16 h-16 bg-red-600/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-brain text-3xl text-red-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Predictive Analytics Platform</h3>
+                    <p class="text-gray-400 mb-4">
+                        Utilizing machine learning algorithms to build predictive models that help businesses forecast market trends, customer behavior, and business risks.
+                    </p>
+                    <a href="#" class="text-red-400 hover:text-red-300 flex items-center">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 服务卡片 6 -->
+                <div class="service-card rounded-xl p-6 filter-item" data-category="cloud">
+                    <div class="w-16 h-16 bg-yellow-600/20 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-3xl text-yellow-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Cloud Security Services</h3>
+                    <p class="text-gray-400 mb-4">
+                        Providing comprehensive cloud security solutions, including data encryption, identity authentication, threat detection, and response services.
+                    </p>
+                    <a href="#" class="text-yellow-400 hover:text-yellow-300 flex items-center">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Green Network</h3>
-                    <p>We are dedicated to protecting our planet through collaborative action, education, and sustainable solutions.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+    <!-- 技术创新 -->
+    <section id="technology" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Technical <span class="gradient-text">Innovation</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-3xl mx-auto">
+                    We continuously explore cutting-edge technologies to provide our clients with the most innovative solutions
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6">3D Data Visualization</h3>
+                    <p class="text-gray-300 mb-6">
+                        Through advanced 3D visualization technology, we transform complex data into intuitive, interactive three-dimensional models, helping businesses better understand and analyze their data.
+                    </p>
+                    <p class="text-gray-300 mb-8">
+                        Our 3D data visualization platform supports real-time data updates, multi-dimensional analysis, and immersive experiences, providing powerful support for decision-making.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gray-700/50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-chart-pie text-blue-500"></i>
+                                </div>
+                                <h4 class="font-bold">Multi-dimensional Data Analysis</h4>
+                            </div>
+                            <p class="text-gray-400 text-sm">
+                                Supports in-depth analysis of data from multiple dimensions to discover hidden business insights.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-purple-600/20 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-vr-cardboard text-purple-500"></i>
+                                </div>
+                                <h4 class="font-bold">Immersive Experience</h4>
+                            </div>
+                            <p class="text-gray-400 text-sm">
+                                Provides immersive data browsing and analysis experiences through VR/AR technologies.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-sync-alt text-green-500"></i>
+                                </div>
+                                <h4 class="font-bold">Real-time Data Updates</h4>
+                            </div>
+                            <p class="text-gray-400 text-sm">
+                                Supports real-time data updates and dynamic display, ensuring decisions are based on the latest information.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-700/50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-red-600/20 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-users text-red-500"></i>
+                                </div>
+                                <h4 class="font-bold">Collaborative Analysis</h4>
+                            </div>
+                            <p class="text-gray-400 text-sm">
+                                Supports multi-user collaborative analysis to improve team decision-making efficiency.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-white font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 inline-block">
+                        Explore More Technologies
+                    </a>
+                </div>
+                
+                <div id="data-visualization" class="relative rounded-xl overflow-hidden shadow-2xl">
+                    <canvas id="visualization-canvas"></canvas>
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent flex items-end">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold mb-2">Real-time Business Data</h4>
+                            <p class="text-gray-300">
+                                Global business data real-time monitoring and analysis
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#initiatives">Initiatives</a></li>
-                        <li><a href="#get-involved">Get Involved</a></li>
-                        <li><a href="#contact">Contact</a></li>
+            </div>
+            
+            <!-- 数据统计图表 -->
+            <div class="mt-20">
+                <h3 class="text-2xl font-bold mb-10 text-center">Business Growth Data</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="bg-gray-700/30 p-6 rounded-xl">
+                        <h4 class="text-xl font-bold mb-4">Quarterly Revenue Growth</h4>
+                        <canvas id="revenue-chart" height="300"></canvas>
+                    </div>
+                    <div class="bg-gray-700/30 p-6 rounded-xl">
+                        <h4 class="text-xl font-bold mb-4">Client Industry Distribution</h4>
+                        <canvas id="industry-chart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客户案例 -->
+    <section class="py-20 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Client <span class="gradient-text">Cases</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-3xl mx-auto">
+                    We have successfully provided digital transformation services to many industry-leading enterprises
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 案例 1 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card">
+                    <img src="https://p26-doubao-search-sign.byteimg.com/pgc-image/d047b38ba2d94d5ab0c226fc855b35e7~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1780114923&x-signature=%2B3%2BM9Dcn0aqLoiLoxzzsQCj%2BFu4%3D" alt="Fintech Case" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full">Fintech</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Global Bank Digital Transformation</h3>
+                        <p class="text-gray-400 mb-4">
+                            Providing omnichannel digital solutions for leading global banks to enhance customer experience and reduce operational costs.
+                        </p>
+                        <a href="#" class="text-blue-400 hover:text-blue-300 flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 案例 2 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card">
+                    <img src="https://p3-doubao-search-sign.byteimg.com/labis/c1aff0067ba57f4c7b04104ae71725c2~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1780114923&x-signature=SWW60s4GTMP5yGmMp58%2FuQJQKfA%3D" alt="Manufacturing Case" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-green-600/20 text-green-400 text-xs px-3 py-1 rounded-full">Smart Manufacturing</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Smart Factory Solution</h3>
+                        <p class="text-gray-400 mb-4">
+                            Building smart factories for manufacturing enterprises, enabling automated production, visualization, and intelligent management.
+                        </p>
+                        <a href="#" class="text-green-400 hover:text-green-300 flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 案例 3 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card">
+                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-6w9my0ksvp/894481ea330c4c5b82c21bdc35655075~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1780114923&x-signature=pfHvNrA2Yg26jYiPJAp1EgBfuas%3D" alt="Retail Case" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-purple-600/20 text-purple-400 text-xs px-3 py-1 rounded-full">Smart Retail</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Omnichannel Retail Platform</h3>
+                        <p class="text-gray-400 mb-4">
+                            Building integrated online and offline omnichannel sales platforms for retail enterprises to improve sales efficiency and customer experience.
+                        </p>
+                        <a href="#" class="text-purple-400 hover:text-purple-300 flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Contact <span class="gradient-text">Us</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-3xl mx-auto">
+                    No matter what questions or needs you have, our team is ready to provide you with support
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">主题</label>
+                            <input type="text" id="subject" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-300 mb-2">消息</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <div>
+                    <div class="bg-gray-700/30 p-8 rounded-xl h-full">
+                        <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fas fa-map-marker-alt text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Headquarters Address</h4>
+                                    <p class="text-gray-400">
+                                        Berlin Innovation Tower, Friedrichstraße 128, 10117 Berlin, Germany
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fas fa-phone-alt text-purple-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Phone</h4>
+                                    <p class="text-gray-400">
+                                        +49 30 5555 7890
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fas fa-envelope text-green-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Email</h4>
+                                    <p class="text-gray-400">
+                                        info@techinnovate.com
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-10">
+                            <h4 class="font-bold mb-4">Follow Us</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center text-blue-500 hover:bg-blue-600/30 transition-all duration-300">
+                                    <i class="fab fa-weixin"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center text-blue-500 hover:bg-blue-600/30 transition-all duration-300">
+                                    <i class="fab fa-weibo"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center text-blue-500 hover:bg-blue-600/30 transition-all duration-300">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center text-blue-500 hover:bg-blue-600/30 transition-all duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div>
+                    <div class="text-2xl font-bold text-white mb-6">
+                        <span class="gradient-text">Tech</span>Innovate
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        Leading the future of technology, providing comprehensive support for enterprise digital transformation
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-white transition-colors">Services</a></li>
+                        <li><a href="#technology" class="text-gray-400 hover:text-white transition-colors">Innovation</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
-                    <h3>Our Programs</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Reforestation</a></li>
-                        <li><a href="#">Ocean Cleanup</a></li>
-                        <li><a href="#">Wildlife Protection</a></li>
-                        <li><a href="#">Climate Education</a></li>
-                        <li><a href="#">Sustainable Agriculture</a></li>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">Solutions</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Artificial Intelligence</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Big Data Analytics</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cloud Computing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">IoT Applications</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Network Security</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
-                    <h3>Contact Us</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Copper Creek Drive, New York</p>
-                    <p><i class="fas fa-phone"></i> +1 (312) 171-0771</p>
-                    <p><i class="fas fa-envelope"></i> support@greennetwork.org</p>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">Contact Us</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-gray-400 mr-3"></i>
+                            <span class="text-gray-400">Berlin Innovation Tower, Friedrichstraße 128, 10117 Berlin, Germany</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt text-gray-400 mr-3"></i>
+                            <span class="text-gray-400">+49 30 5555 7890</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope text-gray-400 mr-3"></i>
+                            <span class="text-gray-400">info@techinnovate.com</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Network. All rights reserved.</p>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-400">
+                    &copy; 2023 TechInnovate. All rights reserved.
+                </p>
             </div>
         </div>
     </footer>
 
-    <script>
-        // Mobile Menu Toggle
-        document.querySelector('.mobile-menu').addEventListener('click', function() {
-            document.querySelector('nav ul').classList.toggle('active');
-        });
+    <!-- AI 客服 -->
+    <div class="chatbot-container">
+        <div class="chatbot-button" id="chatbot-toggle">
+            <i class="fas fa-comments text-white text-xl"></i>
+        </div>
+        
+        <div class="chatbot-panel" id="chatbot-panel">
+            <div class="chatbot-header">
+                <div class="flex items-center">
+                    <i class="fas fa-robot mr-2"></i>
+                    <span>AI Customer Assistant</span>
+                </div>
+                <button id="chatbot-close" class="text-white focus:outline-none">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot-message">
+                    Hello! I am TechInnovate's AI customer service assistant. How can I help you today?
+                </div>
+            </div>
+            
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input" placeholder="Please enter your question...">
+                <button id="chatbot-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
-        // Counter Animation
-        function animateCounters() {
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载动画
+            setTimeout(function() {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500);
+            
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('py-2');
+                    navbar.classList.remove('py-3');
+                } else {
+                    navbar.classList.add('py-3');
+                    navbar.classList.remove('py-2');
+                }
+            });
+            
+            // 移动端菜单
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 关闭移动端菜单
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // 数字增长动画
             const counters = document.querySelectorAll('.counter');
-            const speed = 200; // The lower the slower
+            const speed = 200;
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-target'));
+                        let count = 0;
+                        
+                        const updateCount = () => {
+                            const increment = target / speed;
+                            
+                            if (count < target) {
+                                count += increment;
+                                counter.innerText = Math.ceil(count);
+                                setTimeout(updateCount, 1);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        
+                        updateCount();
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
             
             counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
+                observer.observe(counter);
+            });
+            
+            // 服务筛选
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const filterItems = document.querySelectorAll('.filter-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // 添加当前按钮的active类
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    filterItems.forEach(item => {
+                        if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // AI客服
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotPanel = document.getElementById('chatbot-panel');
+            const chatbotClose = document.getElementById('chatbot-close');
+            const chatbotInput = document.getElementById('chatbot-input');
+            const chatbotSend = document.getElementById('chatbot-send');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+            
+            chatbotToggle.addEventListener('click', function() {
+                chatbotPanel.style.display = 'flex';
+            });
+            
+            chatbotClose.addEventListener('click', function() {
+                chatbotPanel.style.display = 'none';
+            });
+            
+            function sendMessage() {
+                const message = chatbotInput.value.trim();
                 
-                const inc = target / speed;
-                
-                if(count < target) {
-                    counter.innerText = Math.ceil(count + inc);
-                    setTimeout(animateCounters, 1);
-                } else {
-                    counter.innerText = target;
+                if (message) {
+                    // 添加用户消息
+                    const userMessageElement = document.createElement('div');
+                    userMessageElement.classList.add('message', 'user-message');
+                    userMessageElement.innerText = message;
+                    chatbotMessages.appendChild(userMessageElement);
+                    
+                    // 清空输入框
+                    chatbotInput.value = '';
+                    
+                    // 滚动到底部
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                    
+                    // 模拟AI回复
+                    setTimeout(() => {
+                        const botMessageElement = document.createElement('div');
+                        botMessageElement.classList.add('message', 'bot-message');
+                        
+                        // 简单的回复逻辑
+                        let botReply = '';
+                        const lowerMessage = message.toLowerCase();
+                        
+                        if (lowerMessage.includes('你好') || lowerMessage.includes('hi') || lowerMessage.includes('hello')) {
+                            botReply = 'Hello! I am happy to assist you. How can I help you today?';
+                        } else if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('fee')) {
+                            botReply = 'Our solution prices vary based on specific requirements. Please contact our sales team for a detailed quote.';
+                        } else if (lowerMessage.includes('contact') || lowerMessage.includes('phone') || lowerMessage.includes('email')) {
+                            botReply = 'You can contact us by phone at +49 30 5555 7890 or email at info@techinnovate.com.';
+                        } else if (lowerMessage.includes('product') || lowerMessage.includes('service')) {
+                            botReply = 'We provide various solutions including artificial intelligence, big data analytics, cloud computing, and IoT. You can learn more details on our website.';
+                        } else {
+                            botReply = 'Thank you for your inquiry. Our professional team will process your question as soon as possible. Please leave your contact information, and we will get back to you promptly.';
+                        }
+                        
+                        botMessageElement.innerText = botReply;
+                        chatbotMessages.appendChild(botMessageElement);
+                        
+                        // 滚动到底部
+                        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                    }, 1000);
+                }
+            }
+            
+            chatbotSend.addEventListener('click', sendMessage);
+            
+            chatbotInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
                 }
             });
-        }
-
-        // Initialize counters when page loads
-        window.addEventListener('load', animateCounters);
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
+            
+            // 初始化Three.js场景
+            initThreeScene();
+            
+            // 初始化图表
+            initCharts();
+        });
+        
+        // Three.js 3D背景
+        function initThreeScene() {
+            // Hero背景
+            const heroCanvas = document.getElementById('hero-canvas');
+            const heroScene = new THREE.Scene();
+            const heroCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            const heroRenderer = new THREE.WebGLRenderer({
+                canvas: heroCanvas,
+                antialias: true,
+                alpha: true
+            });
+            heroRenderer.setSize(window.innerWidth, window.innerHeight);
+            heroRenderer.setPixelRatio(window.devicePixelRatio);
+            
+            // 创建粒子系统
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 1500;
+            
+            const posArray = new Float32Array(particlesCount * 3);
+            
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.02,
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            heroScene.add(particlesMesh);
+            
+            // 添加光线
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(0, 0, 1);
+            heroScene.add(light);
+            
+            heroCamera.position.z = 5;
+            
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
                 
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
+                particlesMesh.rotation.y += 0.001;
+                particlesMesh.rotation.x += 0.0005;
                 
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
+                heroRenderer.render(heroScene, heroCamera);
+            }
+            
+            animate();
+            
+            // 窗口大小调整
+            window.addEventListener('resize', () => {
+                heroCamera.aspect = window.innerWidth / window.innerHeight;
+                heroCamera.updateProjectionMatrix();
+                heroRenderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // 数据可视化3D场景
+            const visualizationCanvas = document.getElementById('visualization-canvas');
+            if (visualizationCanvas) {
+                const visualizationScene = new THREE.Scene();
+                const visualizationCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+                
+                const visualizationRenderer = new THREE.WebGLRenderer({
+                    canvas: visualizationCanvas,
+                    antialias: true,
+                    alpha: true
+                });
+                
+                const container = document.getElementById('data-visualization');
+                if (container) {
+                    const width = container.clientWidth;
+                    const height = container.clientHeight;
+                    visualizationRenderer.setSize(width, height);
+                    visualizationCamera.aspect = width / height;
+                    visualizationCamera.updateProjectionMatrix();
+                }
+                
+                // 创建数据塔
+                const towersGroup = new THREE.Group();
+                visualizationScene.add(towersGroup);
+                
+                const towerGeometry = new THREE.BoxGeometry(0.2, 1, 0.2);
+                
+                // 创建多个不同高度的数据塔
+                for (let i = 0; i < 20; i++) {
+                    const height = Math.random() * 3 + 0.5;
+                    const towerMaterial = new THREE.MeshPhongMaterial({
+                        color: new THREE.Color(0.1 + Math.random() * 0.3, 0.4 + Math.random() * 0.3, 0.8 + Math.random() * 0.2),
+                        transparent: true,
+                        opacity: 0.8,
+                        shininess: 100
                     });
                     
-                    document.querySelector('nav ul').classList.remove('active');
+                    const tower = new THREE.Mesh(towerGeometry, towerMaterial);
+                    tower.scale.y = height;
+                    tower.position.x = (Math.random() - 0.5) * 10;
+                    tower.position.z = (Math.random() - 0.5) * 10;
+                    tower.position.y = height / 2;
+                    
+                    towersGroup.add(tower);
                 }
-            });
-        });
+                
+                // 添加连接线
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: 0x4a9eff,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                
+                for (let i = 0; i < 30; i++) {
+                    const points = [];
+                    points.push(new THREE.Vector3(
+                        (Math.random() - 0.5) * 10,
+                        Math.random() * 3,
+                        (Math.random() - 0.5) * 10
+                    ));
+                    points.push(new THREE.Vector3(
+                        (Math.random() - 0.5) * 10,
+                        Math.random() * 3,
+                        (Math.random() - 0.5) * 10
+                    ));
+                    
+                    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                    const line = new THREE.Line(lineGeometry, lineMaterial);
+                    towersGroup.add(line);
+                }
+                
+                // 添加光源
+                const ambientLight = new THREE.AmbientLight(0x404040, 2);
+                visualizationScene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(1, 1, 1);
+                visualizationScene.add(directionalLight);
+                
+                visualizationCamera.position.z = 8;
+                visualizationCamera.position.y = 4;
+                visualizationCamera.lookAt(0, 0, 0);
+                
+                // 动画循环
+                function visualizeAnimate() {
+                    requestAnimationFrame(visualizeAnimate);
+                    
+                    towersGroup.rotation.y += 0.002;
+                    
+                    visualizationRenderer.render(visualizationScene, visualizationCamera);
+                }
+                
+                visualizeAnimate();
+                
+                // 窗口大小调整
+                window.addEventListener('resize', () => {
+                    if (container) {
+                        const width = container.clientWidth;
+                        const height = container.clientHeight;
+                        visualizationRenderer.setSize(width, height);
+                        visualizationCamera.aspect = width / height;
+                        visualizationCamera.updateProjectionMatrix();
+                    }
+                });
+            }
+        }
+        
+        // 初始化图表
+        function initCharts() {
+            // 收入增长图表
+            const revenueChart = document.getElementById('revenue-chart');
+            if (revenueChart) {
+                new Chart(revenueChart, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                        datasets: [{
+                            label: '2022 Revenue (Millions)',
+                            data: [120, 190, 250, 310],
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '2023 Revenue (Millions)',
+                            data: [180, 250, 320, 400],
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 行业分布图表
+            const industryChart = document.getElementById('industry-chart');
+            if (industryChart) {
+                new Chart(industryChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Finance', 'Manufacturing', 'Retail', 'Healthcare', 'Others'],
+                        datasets: [{
+                            data: [35, 25, 20, 15, 5],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(153, 102, 255, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(255, 159, 64, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
     </script>
 </body>
-
 </html>
